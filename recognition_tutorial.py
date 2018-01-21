@@ -1,5 +1,5 @@
 #OpenCV module
-import cv2
+#import cv2
 import sys
 import time
 #os module for reading training data directories and paths
@@ -7,6 +7,9 @@ import time
 import os
 #numpy to convert python lists to numpy arrays as it is needed by OpenCV face recognizers
 import numpy as np
+sys.path.append('./local/lib/Python2.7/site-packages')
+import cv2
+import inspect
 
 #function to detect face using OpenCV
 def detect_face(img):
@@ -191,14 +194,15 @@ def recognize():
 
 	print("Predicting images...")
 
-	#load test images
+	
+	#test images
 	test = cv2.imread("test.jpg")
 
 	predicted_test = predict(test)
 	print("Prediction complete")
 
 	#display both images
-	print(predicted_test)
+	cv2.imshow("Result", predicted_test)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 
@@ -216,10 +220,11 @@ print("Data prepared")
 #print total faces and labels
 print("Total faces: ", len(faces))
 print("Total labels: ", len(labels))
+#help(cv2)
+#inspect.getfile(cv2)
 #help(cv2.face)
 #create our LBPH face recognizer 
-face_recognizer = cv2.face.LBPHFaceRecognizer_create()
-
+face_recognizer = cv2.createLBPHFaceRecognizer()
 #or use EigenFaceRecognizer by replacing above line with 
 #face_recognizer = cv2.face.createEigenFaceRecognizer_create()
 
