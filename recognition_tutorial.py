@@ -1,5 +1,5 @@
 #OpenCV module
-import cv2
+#import cv2
 import sys
 import time
 #os module for reading training data directories and paths
@@ -7,6 +7,9 @@ import time
 import os
 #numpy to convert python lists to numpy arrays as it is needed by OpenCV face recognizers
 import numpy as np
+#sys.path.append('./local/lib/Python2.7/site-packages')
+import cv2
+import inspect
 
 #function to detect face using OpenCV
 def detect_face(img):
@@ -147,11 +150,12 @@ def predict(test_img):
 	#draw name of predicted person
 	draw_text(img, label_text, rect[0], rect[1]-5)
 	 
-	return img
-
+	#return img
+	return label_text
+	
 def recognize():
-	# Get a reference to webcam #0 (the default one)
 	video_capture = cv2.VideoCapture(0)
+	# Get a reference to webcam #0 (the default one)
 	cascPath = "haarcascade_frontalface_default.xml"
 	faceCascade = cv2.CascadeClassifier(cascPath)
 
@@ -159,7 +163,8 @@ def recognize():
 	while noFace:
 	    # Capture frame-by-frame
 	    ret, frame = video_capture.read()
-
+	    #time.sleep(10)
+	
 	    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 	    faces = faceCascade.detectMultiScale(
@@ -185,19 +190,25 @@ def recognize():
 	    if cv2.waitKey(1) & 0xFF == ord('q'):
 	        break
 
+		
+	
+	
+	
 	# When everything is done, release the capture
 	video_capture.release()
 	cv2.destroyAllWindows()
 
 	print("Predicting images...")
 
-	#load test images
+	
+	#test images
 	test = cv2.imread("test.jpg")
 
 	predicted_test = predict(test)
 	print("Prediction complete")
 
 	#display both images
+	#cv2.imshow("Result", predicted_test)
 	print(predicted_test)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
@@ -216,10 +227,11 @@ print("Data prepared")
 #print total faces and labels
 print("Total faces: ", len(faces))
 print("Total labels: ", len(labels))
+#help(cv2)
+#inspect.getfile(cv2)
 #help(cv2.face)
 #create our LBPH face recognizer 
-face_recognizer = cv2.face.LBPHFaceRecognizer_create()
-
+face_recognizer = cv2.createLBPHFaceRecognizer()
 #or use EigenFaceRecognizer by replacing above line with 
 #face_recognizer = cv2.face.createEigenFaceRecognizer_create()
 
@@ -229,4 +241,5 @@ face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 #train our face recognizer of our training faces
 face_recognizer.train(faces, np.array(labels))
 time.sleep(5)
-recognize()
+while True:
+	recognize()
