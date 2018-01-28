@@ -29,7 +29,7 @@ def detect_face(img):
         gray,
         scaleFactor=1.2,
         minNeighbors=5,
-        minSize=(30, 30),
+        minSize=(150, 150),
         #flags=cv2.cv.CV_HAAR_SCALE_IMAGE
     )
 
@@ -158,7 +158,7 @@ def recognize():
 	# Get a reference to webcam #0 (the default one)
 	cascPath = "haarcascade_frontalface_default.xml"
 	faceCascade = cv2.CascadeClassifier(cascPath)
-
+	#print("test")
 	noFace = True
 	while noFace:
 	    # Capture frame-by-frame
@@ -177,7 +177,7 @@ def recognize():
 
 	    # Draw a rectangle around the faces
 	    for (x, y, w, h) in faces:
-	        #cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+	        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 	       	cv2.imwrite("test.jpg", frame)
 	       	noFace = False
 
@@ -198,48 +198,55 @@ def recognize():
 	video_capture.release()
 	cv2.destroyAllWindows()
 
-	print("Predicting images...")
+	#print("Predicting images...")
 
 	
 	#test images
 	test = cv2.imread("test.jpg")
 
 	predicted_test = predict(test)
-	print("Prediction complete")
+	#print("Prediction complete")
 
 	#display both images
 	#cv2.imshow("Result", predicted_test)
 	print(predicted_test)
+	return (predicted_test)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 
-#there is no label 0 in our training data so subject name for index/label 0 is empty
-subjects = ["", "s1", "s2"]
+def initialization():
+	#there is no label 0 in our training data so subject name for index/label 0 is empty
+	global subjects
+	subjects = ["", "s1", "s2"]
 
-#let's first prepare our training data
-#data will be in two lists of same size
-#one list will contain all the faces
-#and the other list will contain respective labels for each face
-print("Preparing data...")
-faces, labels = prepare_training_data("training-data")
-print("Data prepared")
+	#let's first prepare our training data
+	#data will be in two lists of same size
+	#one list will contain all the faces
+	#and the other list will contain respective labels for each face
+	#print("Preparing data...")
+	global faces, labels
+	faces, labels = prepare_training_data("training-data")
+	#print("Data prepared")
 
-#print total faces and labels
-print("Total faces: ", len(faces))
-print("Total labels: ", len(labels))
-#help(cv2)
-#inspect.getfile(cv2)
-#help(cv2.face)
-#create our LBPH face recognizer 
-face_recognizer = cv2.createLBPHFaceRecognizer()
-#or use EigenFaceRecognizer by replacing above line with 
-#face_recognizer = cv2.face.createEigenFaceRecognizer_create()
+	#print total faces and labels
+	#print("Total faces: ", len(faces))
+	#print("Total labels: ", len(labels))
+	#help(cv2)
+	#inspect.getfile(cv2)
+	#help(cv2.face)
+	#create our LBPH face recognizer 
+	global face_recognizer
+	face_recognizer = cv2.createLBPHFaceRecognizer()
+	#or use EigenFaceRecognizer by replacing above line with 
+	#face_recognizer = cv2.face.createEigenFaceRecognizer_create()
 
-#or use FisherFaceRecognizer by replacing above line with 
-#face_recognizer = cv2.face.createFisherFaceRecognizer()
+	#or use FisherFaceRecognizer by replacing above line with 
+	#face_recognizer = cv2.face.createFisherFaceRecognizer()
 
-#train our face recognizer of our training faces
-face_recognizer.train(faces, np.array(labels))
-time.sleep(5)
-while True:
-	recognize()
+	#train our face recognizer of our training faces
+	face_recognizer.train(faces, np.array(labels))
+	#time.sleep(5)
+	
+	
+#initialization()
+#recognize()
